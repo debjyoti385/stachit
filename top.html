@@ -1,0 +1,108 @@
+
+<html>
+<head >
+	<link rel="stylesheet" type="text/css" href="main.css" />
+	
+	<script>
+		function callGetValue(value)
+		{
+			var rad_val="";
+			for (var i=0; i < document.form_.type.length; i++){
+			   if (document.form_.type[i].checked)
+			      {
+			      	rad_val = document.form_.type[i].value;
+			      }
+			}
+			//alert(value);
+			getValue(value,"chat1/sendToBoss.php",rad_val);
+		}
+		function clickResponse()
+		{
+			var rad_val="";
+			for (var i=0; i < document.form_.type.length; i++){
+			   if (document.form_.type[i].checked)
+			      {
+			      	rad_val = document.form_.type[i].value;
+			      }
+			}
+			getValue(document.getElementById("user_search").value,"chat1/sendToBoss.php",rad_val);
+		}
+		
+		function keyResponse(e)
+		{
+			var rad_val="";
+			for (var i=0; i < document.form_.type.length; i++){
+			   if (document.form_.type[i].checked)
+			      {
+			      	rad_val = document.form_.type[i].value;
+			      }
+			}
+			
+			if(e.keyCode == 13)
+			{
+				//alert(rad_val);
+				getValue(document.getElementById("user_search").value,"chat1/sendToBoss.php",rad_val);
+			}
+		}
+
+		function getValue(input,fileName,key)
+		{
+			var xmlhttp;
+			var responseFromServer="0";
+			//alert("asdfaksdas" + key);
+			if (input.length==0 || input == "Search...")
+			{ 
+				return ;
+			}
+			if (window.XMLHttpRequest)
+			{// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+			}
+			else
+			{// code for IE6, IE5
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange=function()
+			{
+				if (xmlhttp.readyState==4 && xmlhttp.status==200)
+				{
+					responseFromServer=xmlhttp.responseText;
+					//alert(responseFromServer);
+				}
+			}
+			//alert(fileName + "?q=" + encodeURIComponent(input) + "&r=" + key);
+			xmlhttp.open("GET",fileName + "?q=" + encodeURIComponent(input) + "&r=" + key,false);
+			xmlhttp.send();
+
+			parent.parent.timeline.refresh(input);
+			//alert("DID NOT WORK PROPERLY");
+		}
+		
+	
+	</script>
+	
+</head>
+
+<body>
+
+<div id=topbar height="7%" >
+
+
+
+	<div class="search_textAnalysis">
+		<form class="searchform" align="center" name="form_">
+
+<input type="radio" name="type" value="web" /> <font size="small" ><i>web</i></font>
+<input type="radio" name="type" value="news" /> <font size="small"  > <i>news</i></font>
+<input type="radio" name="type" value="cricketer" checked/> <font size="small" ><i>cricketer</i></font>
+
+			<input id="user_search" class="searchfield" type="text" value="Search..." onfocus="if (this.value == 'Search...') {this.value = '';}" onblur="if (this.value == '') {this.value = 'Search...';}"  onKeyPress="keyResponse(event)" />
+			<input class="searchbutton" type="button" value="Go" onClick="clickResponse()"/>
+		</form>
+	</div>
+</div>
+<iframe src="index.html" width="100%" height="93%" frameborder="0"></iframe> 
+
+</body>
+
+</html>

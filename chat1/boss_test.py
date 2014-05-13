@@ -1,0 +1,214 @@
+import urllib2
+import oauth2 as oauth
+import time
+import json
+import sys
+import os
+import re
+
+os.environ['http_proxy']="http://tgandhi:zodiac@proxy.iitk.ac.in:3128/"
+OAUTH_CONSUMER_KEY = "dj0yJmk9YWF3ODdGNWZPYjg2JmQ9WVdrOWVsWlZNRk5KTldFbWNHbzlNVEEyTURFNU1qWXkmcz1jb25zdW1lcnNlY3JldCZ4PTUz"
+OAUTH_CONSUMER_SECRET = "a3d93853ba3bad8a99a175e8ffa90a702cd08cfa"
+
+def oauth_request(url, params, method="GET"):
+    # Removed trailing commas here - they make a difference.
+    params['oauth_version'] = "1.0" #,
+    params['oauth_nonce'] = oauth.generate_nonce() #,
+    params['oauth_timestamp'] = int(time.time())
+
+    consumer = oauth.Consumer(key=OAUTH_CONSUMER_KEY,
+                              secret=OAUTH_CONSUMER_SECRET)
+    params['oauth_consumer_key'] = consumer.key
+    req = oauth.Request(method=method, url=url, parameters=params)
+    req.sign_request(oauth.SignatureMethod_HMAC_SHA1(), consumer, None)
+    return req	
+
+def get_results(qtype,keyword):
+    url = "http://yboss.yahooapis.com/ysearch/"+qtype
+
+    req = oauth_request(url, params={"q": keyword, "format": "json"})
+    # This one is a bit nasty. Apparently the BOSS API does not like
+    # "+" in its URLs so you have to replace "%20" manually.
+    # Not sure if the API should be expected to accept either.
+    # Not sure why to_url does not just return %20 instead...
+    # Also, oauth2.Request seems to store parameters as unicode and forget
+    # to encode to utf8 prior to percentage encoding them in its to_url
+    # method. However, it's handled correctly for generating signatures.
+    # to_url fails when query parameters contain non-ASCII characters. To
+    # work around, manually utf8 encode the request parameters.
+    req['q'] = req['q'].encode('utf8')
+    req_url = req.to_url().replace('+', '%20')
+    #print req_url
+    #http = urllib3.PoolManager(10)
+    #r1 = http.request('GET', req_url)
+    page = urllib2.urlopen(req_url)
+    json_txt = page.read()
+    return json_txt
+
+def get_suggestions(query):
+    url = "http://yboss.yahooapis.com/ysearch/spelling?q="+query
+
+    req = oauth_request(url, params={"q": keyword, "format": "json"})
+    req['q'] = req['q'].encode('utf8')
+    req_url = req.to_url().replace('+', '%20')
+    #print req_url
+    #http = urllib3.PoolManager(10)
+    #r1 = http.request('GET', req_url)
+    page=urllib2.urlopen(req_url)
+    #json_txt = ''.join(r1.data)
+    json_txt  = page.read()
+    json_obj = json.loads(json_txt)
+    suggestions = []
+    if json_obj['bossresponse']['spelling'].has_key('results'):
+		for w in json_obj['bossresponse']['spelling']['results']:
+			suggestions.append(w['suggestion'])
+    return suggestions
+
+def get_timeline_json(boss_json,keyword,qtype):
+	jobj      = json.loads(boss_json)
+	# TODO: If we are unable to find this key
+	# then the result is invalid.
+	jobj = jobj['bossresponse']
+	# TODO: If the response code is not 200, 
+	# handle the exception.
+	resp_code = jobj['responsecode']
+	count     = jobj[qtype]['count']
+	res_obj   = {  'timeline': { 
+	                      'headline': qtype +' search results for %s' % keyword , 
+	                      'type': "default" , 
+	                      'text': "The Awesome hack!!", 
+	                      'date':[ ]
+	                    } 
+	            }
+	
+	ctime = time.time()
+	count = 1
+	
+	if qtype=='web':
+		####################### Get Twitter page##############################
+		twitter_json_txt = get_results('web',keyword+" twitter")
+		twitter_json     = json.loads(twitter_json_txt)
+		#import pprint;pprint.pprint(twitter_json)
+		twitter_json = twitter_json['bossresponse']
+		if twitter_json[qtype].has_key('results'):
+			for result in twitter_json[qtype]['results']:
+				# Date format is "ccyy,mm,dd"
+				if result['date']!='':
+					dt     = time.gmtime(int(result['date']))
+					dt_str = str(dt.tm_year)+","+str(dt.tm_mon)+","+str(dt.tm_mday)+","+str(dt.tm_hour)+","+str(dt.tm_min)
+				else:
+				### HACK!!
+					ctime  -= 24*3600
+					dt      = time.gmtime(ctime)
+					dt_str  = str(dt.tm_year)+","+str(dt.tm_mon)+","+str(dt.tm_mday)+","+str(dt.tm_hour)+","+str(dt.tm_min) 
+					if not result['url'].find('twitter') >= 0:
+						continue
+				
+				l = {'startDate': dt_str, 
+					 'headline' : result['title'], 
+					 'text' : result['abstract'], 
+					 'asset' : {
+						         'media': result['url'],
+						         'credit':'',
+						         'caption':''
+						       }
+					 }
+				print 'Adding a tweet to timeline'
+				res_obj['timeline']['date'].append(l)
+				break
+				
+		####################### Get youtube page##############################
+		youtube_json_txt = get_results('web',keyword+" youtube")
+		youtube_json     = json.loads(youtube_json_txt)
+		youtube_json = youtube_json['bossresponse']
+		if youtube_json[qtype].has_key('results'):
+			for result in youtube_json[qtype]['results']:
+				# Date format is "ccyy,mm,dd"
+				if result['date']!='':
+					dt     = time.gmtime(int(result['date']))
+					dt_str = str(dt.tm_year)+","+str(dt.tm_mon)+","+str(dt.tm_mday)+","+str(dt.tm_hour)+","+str(dt.tm_min)
+				else:
+				### HACK!!
+					ctime  -= 24*3600
+					dt      = time.gmtime(ctime)
+					dt_str  = str(dt.tm_year)+","+str(dt.tm_mon)+","+str(dt.tm_mday)+","+str(dt.tm_hour)+","+str(dt.tm_min) 
+					if not result['url'].find('youtube') >= 0:
+						continue
+				
+				l = {'startDate': dt_str, 
+					 'headline' : result['title'], 
+					 'text' : result['abstract'], 
+					 'asset' : {
+						         'media': result['url'],
+						         'credit':'',
+						         'caption':''
+						       }
+					 }
+				res_obj['timeline']['date'].append(l)
+				print 'adding a youtube video to timeline'
+				break	
+	
+	####################### Add web search results #######################
+	count=1	
+	if jobj[qtype].has_key('results'):
+		for result in jobj[qtype]['results']:
+			if count == 18: break
+			# Date format is "ccyy,mm,dd"
+			if result['date']!='':
+				dt     = time.gmtime(int(result['date']))
+				dt_str = str(dt.tm_year)+","+str(dt.tm_mon)+","+str(dt.tm_mday)+","+str(dt.tm_hour)+","+str(dt.tm_min)
+			else:
+			### HACK!!
+				ctime  -= 24*3600
+				dt      = time.gmtime(ctime)
+				dt_str  = str(dt.tm_year)+","+str(dt.tm_mon)+","+str(dt.tm_mday)+","+str(dt.tm_hour)+","+str(dt.tm_min) 
+			
+			l = {'startDate': dt_str, 
+				 'headline' : result['title'], 
+				 'text' : result['abstract'], 
+				 'asset' : {
+				             'media': result['url'],
+				             'credit':'',
+				             'caption':''
+				           }
+				 }
+			res_obj['timeline']['date'].append(l)
+			count += 1
+	return res_obj
+
+if __name__ == "__main__":
+	if len(sys.argv) != 4:
+		print 'Usage: python boss_test.py <news/web> <query string> <json filename>'
+		sys.exit(1)
+	
+	qtype   = sys.argv[1] # web/news
+	query   = sys.argv[2] # search query
+	#cap_query = re.sub(' ','%20',query)
+    #cap       = 'http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20contentanalysis.analyze%20where%20text%3D%27'+cap_query+
+    #            '%27%3B&diagnostics=true&format=json&'
+	#keyword detection could have been done by Yahoo! CAP
+	keyword = query
+	outfile = sys.argv[3] # json file name
+	if qtype == 'cricketer':
+		cric_query = re.sub("'","\\'",query)
+		cric_query = "'"+cric_query+"'"
+		status = os.system("python storyline.py "+cric_query+ " "+outfile)
+		if status==0:
+			sys.exit(0)
+		qtype = 'web'
+
+	for c in [0,1,2]:
+		suggestions = get_suggestions(query)
+		print c, ':', len(suggestions)
+		if len(suggestions)>0: break
+	
+	if len(suggestions)>0:
+		print 'Suggestions:',(' '.join(suggestions))
+		keyword=suggestions[0]
+	
+	boss_json = get_results(qtype,keyword)
+	out       = get_timeline_json(boss_json,keyword,qtype)
+
+	fp = open(outfile,'w')
+	fp.write(json.dumps(out))
+	fp.close()

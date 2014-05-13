@@ -1,0 +1,14 @@
+<html>
+<head >
+<link rel="stylesheet" type="text/css" href="css/page.css" />
+</head>
+<frameset rows="*,415px" frameborder="0" >
+	<frame src="textAnalysis.php" name="chat" >
+	<frame  src="chat.php" name="timeline">
+	<noframes>
+<body>
+
+</body>
+</noframes>
+</frameset>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Timeline</title>
+		<meta name="description" content="TimelineJS example">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/framewarp/framewarp.css" />
+		<style>
+			html, body {
+				height:100%;
+				padding: 0px;
+				margin: 0px;
+			}
+			#timeline-embed{
+				margin:0px !important;
+				border:0px solid #CCC !important;
+				padding:0px !important;
+				-webkit-border-radius:0px !important;
+				-moz-border-radius:0px !important;
+				border-radius:0px !important;
+				-moz-box-shadow:0 0px 0px rgba(0, 0, 0, 0.25) !important;
+				-webkit-box-shadow:0 0px 0px rgba(0, 0, 0, 0.25) !important;
+				box-shadow:0px 0px 0px rgba(0, 0, 0, 0.25) !important;
+			}
+			
+		</style>
+		
+	</head>
+
+	<body >
+
+
+		<script type="text/javascript">
+		function refresh(value){
+			document.location.reload();
+			
+		}
+		</script>
+
+		<!-- BEGIN Timeline Embed -->
+		<div id="timeline-embed"></div>
+		
+		<script type="text/javascript">
+
+		    var stringValue = getJsonFileName();//'../../chat1/sample1.json';
+
+		    function getSessionName(){
+			var xmlhttp;
+			var responseFromServer="0";
+			
+			if (window.XMLHttpRequest)
+			{// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+				//alert("Object created");
+			}
+			else
+			{// code for IE6, IE5
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			xmlhttp.onreadystatechange=function()
+			{
+				if (xmlhttp.readyState==4 && xmlhttp.status==200)
+				{
+					responseFromServer=xmlhttp.responseText;
+					//alert("At timeline" + responseFromServer);
+				}
+			}
+			xmlhttp.open("GET","../../chat1/getSession.php",false);
+			xmlhttp.send();
+			return responseFromServer;
+		    }
+
+		    function getJsonFileName(){
+			//alert("Retrieving JSon file");
+			var filler = '../../chat1/' + getSessionName()+ 'sample1.json';
+			//alert(filler);
+			return filler;
+		    }			
+
+		    var timeline_config = {
+				width: 	"100%",
+				height: "100%",
+				source: stringValue,
+				reverse: true,                          //OPTIONAL
+                start_at_end:	true,					//OPTIONAL
+				//hash_bookmark: true,					//OPTIONAL
+				css: 	'../compiled/css/timeline.css',	//OPTIONAL
+				js: 	'../compiled/js/timeline.js'	//OPTIONAL
+			}
+		</script>
+
+    </div>
+		<script type="text/javascript" src="../compiled/js/timeline-embed.js"></script>		
+		<!-- END Timeline Embed -->
+		
+
+    		
+	</body>
+</html>

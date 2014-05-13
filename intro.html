@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Test</title>
+
+		
+	<link rel=StyleSheet HREF="intro.css" TYPE="text/css" >
+<style type="text/css">
+/* Remove margins from the 'html' and 'body' tags, and ensure the page takes up full screen height */
+html, body {height:100%; margin:0; padding:0;}
+/* Set the position and dimensions of the background image. */
+#page-background {position:fixed; top:0; left:0; width:100%; height:100%;}
+/* Specify the position and layering for the content that needs to appear in front of the background image. Must have a higher z-index value than the background image. Also add some padding to compensate for removing the margin from the 'html' and 'body' tags. */
+#content {position:relative; z-index:1; padding:10px;}
+</style>
+<!-- The above code doesn't work in Internet Explorer 6. To address this, we use a conditional comment to specify an alternative style sheet for IE 6 -->
+<!--[if IE 6]>
+<style type="text/css">
+html {overflow-y:hidden;}
+body {overflow-y:auto;}
+#page-background {position:absolute; z-index:-1;}
+#content {position:static;padding:10px;}
+</style>
+<![endif]-->	
+</style>	
+	
+	</head>
+	<body>
+	
+<div id="page-background"><img src="STaCHIT.png" width="100%" height="100%" alt=""></div>	
+
+	
+	<div class="container">
+
+	<a href="#" class="trigger"><b><u><font color = "black">Viewer</font></u></b></a>
+	
+	<div id="tooltip">
+		<img class="avatar" src="2iTNX10.png" />
+		<div class="info">
+			<h2><b><u>Read Your News Here!!</u></b></h2>
+			<p> Container for ease of information access on the web like <br>
+			Facebook, Twitter, YouTube, SoundBox etc.
+			</p>
+		</div>
+		<a class="close">×</a>
+	</div>
+
+	
+</div>
+
+
+
+	<div class="container1" position="absolute" top="0px">
+
+	<a href="#" class="trigger"><b><u><font color = "black"> TimeLine</font></b></u></a>
+	
+	<div id="tooltip">
+		<img class="avatar" src="2iTNX10.png" />
+		<div class="info">
+			<h2><b><u>Scroll Through your Timeline!!</u></b></h2>
+			<p>
+				A timeline slider for easy <br />
+				navigation aiding the view container
+			</p>
+		</div>
+		<a class="close">×</a>
+	</div>
+	</div>
+
+	<div class="container2" >
+
+	<a href="#" class="trigger"><u><b><font color = "black">Chat!!</font></b></u></a>. 
+	
+	<div id="tooltip">
+		<img class="avatar" src="2iTNX10.png" />
+		<div class="info">
+			<h2><b><u>Engage with Others</b></u></h2>
+			<p>
+				Also get suggestions about <br />
+				WHAT? did the other guy meant!!
+			</p>
+		</div>
+		<a class="close">×</a>
+	</div>
+	</div>
+	
+	<div class="container3" text-color="black" >
+
+	<a href="#" class="trigger"><u><b><font color = "black">Suggestions</font></b></u></a>
+	
+	<div id="tooltip">
+		<img class="avatar" src="2iTNX10.png" />
+		<div class="info">
+			<h2><b><u>Smart Suggest!!</h2>
+			<p>
+				Suggestions keeps you involved  <br />
+				keeping you in pace with what's goin on!!
+			</p>
+		</div>
+		<a class="close">×</a>
+	</div>
+	</div>
+	<div id="content" height="400px" width="20%" position="absolute" top="0px" left="50%">
+	<a href="top.html"> <div id="content" height="400px" width="100%" position="absolute" top="0px" left="50%">	 </div>	</a>
+	</div>
+</body>
+</html>

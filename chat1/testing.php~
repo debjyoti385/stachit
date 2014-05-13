@@ -1,0 +1,16 @@
+<html>
+<body>
+<?php
+	$theData="";
+	$myFile = "corpusConcepts.txt";
+	$fh = fopen($myFile, 'r') or exit("Unable to open file!");
+	while(!feof($fh))
+	{
+		//echo fgets($fh) . "<br/>";
+		$theData = $theData . fgets($fh) . "<br/>";
+	}
+	fclose($fh);
+	echo $theData;
+?>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>WebDesignCrowd: Custom CSS3 Animated Buttons</title>
+<link href="style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+<script src="jquery.min.js" type="text/javascript" charset="UTF-8"></script>
+<script src="animation.js" type="text/javascript" charset="UTF-8"></script>
+
+</head>
+
+<body>
+	<div id="button-container" >
+		<a href="http://webdesigncrowd.com" id="button">WebDesignCrowd</a>
+	</div>
+	
+	<div id="button-container" class="demo">
+		<a href="#" id="button">Demo</a>
+			<div id="arrow-container">
+				<div id="arrow-rectangle">
+				</div>
+				<div id="arrow-triangle" >
+				</div>
+			</div>
+	</div>
+	
+	<div id="button-container" class="download">
+		<a href="#" id="button">Download</a>
+			<div id="arrow-container">
+				<div id="arrow-rectangle">
+				</div>
+				<div id="arrow-triangle" >
+				</div>
+			</div>
+	</div>
+	
+	<div id="button-container" class="digg">
+		<a href="#" id="button">Digg</a>
+			<div id="arrow-container">
+				<div id="arrow-rectangle-staff" class="one">
+				</div>
+				<div id="arrow-rectangle-handle" class="two">
+				</div>
+				<div id="arrow-triangle" >
+				</div>
+			</div>
+	</div>
+	
+	<div id="button-container" class="email">
+		<a href="#" id="button">Email</a>
+			<div id="arrow-container">
+				<div id="arrow-rectangle">
+				</div>
+				<div id="arrow-triangle" >
+				</div>
+			</div>
+	</div>
+	
+	<div id="button-container" class="rss">
+		<a href="#" id="button">RSS</a>
+			<div id="arrow-container">
+				<div id="arrow-rectangle">
+				</div>
+				<div id="arrow-triangle" >
+				</div>
+			</div>
+	</div>
+
+</body>
+</html>
